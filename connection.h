@@ -1,17 +1,25 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 #include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
+#include "mainwindow.h"
 
-class Connection
+
+
+class connection
 {
-
-    QSqlDatabase db ;
 public:
-    Connection();
-    bool createconnection();
-    void closeConnection();
+    connection();
+    ~connection();
+
+   static bool connect();
+     void closeconnecxion();
+
+
+
+
+private:
+    Ui::MainWindow *ui;
+     //QSqlDatabase db;
 };
 
-#endif // CONNECTION_H
+#endif // CONEXION_H

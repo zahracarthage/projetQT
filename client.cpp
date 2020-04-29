@@ -77,7 +77,7 @@ bool client::modifier(int REF)
 {
     QSqlQuery query;
     QString res= QString::number(REF);
-    query.prepare("UPDATE client SET REF=:REF,NOM=:NOM,PRENOM=:NOM,CIN=:CIN,ADRESSE=:ADRESSE,DATE1=:DATE1,NBR_JOURS=:NBR_JOURS WHERE REF=:REF");
+    query.prepare("UPDATE client SET REF=:REF,NOM=:NOM,PRENOM=:PRENOM,CIN=:CIN,ADRESSE=:ADRESSE,DATE1=:DATE1,NBR_JOURS=:NBR_JOURS WHERE REF=:REF");
     query.bindValue(":REF", REF);
     query.bindValue(":NOM", NOM);
     query.bindValue(":PRENOM", PRENOM);
