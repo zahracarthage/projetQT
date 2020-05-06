@@ -239,11 +239,11 @@ private slots:
     
     
     
-    void on_pushButton_118_clicked();
+   void on_pushButton_118_clicked();
 
     void on_a_modifier_3_clicked();
 
-    void on_pushButton_119_clicked();
+   void on_pushButton_119_clicked();
 
     void on_a_supprimer_3_clicked();
 
