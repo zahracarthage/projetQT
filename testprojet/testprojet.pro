@@ -30,12 +30,15 @@ SOURCES += \
     departement.cpp \
     depenses.cpp \
     emplacement.cpp \
+    location.cpp \
     main.cpp \
     modulevoiture.cpp \
+    paiement.cpp \
     personnel.cpp \
     qcustomplot.cpp \
     reclamation.cpp \
     smtp.cpp \
+    tableprinter.cpp \
     voiture.cpp
 
 HEADERS += \
@@ -48,11 +51,14 @@ HEADERS += \
     departement.h \
     depenses.h \
     emplacement.h \
+    location.h \
     modulevoiture.h \
+    paiement.h \
     personnel.h \
     qcustomplot.h \
     reclamation.h \
     smtp.h \
+    tableprinter.h \
     voiture.h
 
 FORMS += \

@@ -50,3 +50,13 @@ query.prepare("Delete from chauffeure where MATRICULE_FISCALE = :MAT ");
 query.bindValue(":MAT", res);
 return    query.exec();
 }
+bool chauffeure::modifier(int MATRICULE_FISCALE)
+{
+    QSqlQuery query;
+    QString res= QString::number(MATRICULE_FISCALE);
+    query.prepare("UPDATE chauffeure SET MATRICULE_FISCALE=:MATRICULE_FISCALE, NOM=:NOM, WHERE MATRICULE_FISCALE=:MATRICULE_FISCALE");
+    query.bindValue(":MATRICULE_FISCALE", MATRICULE_FISCALE);
+    query.bindValue(":NOM", NOM);
+    return    query.exec();
+
+}

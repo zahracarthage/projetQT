@@ -72,7 +72,8 @@ bool contrat::modifier(int id_voiture,QString nom,QString prenom,QString tel,QDa
     return query.exec();
 }
 QSqlQueryModel * contrat:: afficher_tri_ID()
-{QSqlQueryModel * model= new QSqlQueryModel();
+{
+    QSqlQueryModel * model= new QSqlQueryModel();
 
 model->setQuery("select * from contrat order by id_voiture");
 model->setHeaderData(0, Qt::Horizontal, QObject::tr("id_voiture"));

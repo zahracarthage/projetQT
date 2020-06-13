@@ -18,6 +18,9 @@
 #include <QSqlTableModel>
 #include <QSoundEffect>
 #include "contrat.h"
+#include "tableprinter.h"
+#include "location.h"
+#include "paiement.h"
 #include "reclamation.h"
 #include <QSound>
 #include <QMediaPlayer>
@@ -750,6 +753,45 @@ private slots:
     void on_icon4_83_clicked();
 
     void on_pushButton_140_clicked();
+
+    void on_b_modifierv_6_clicked();
+
+
+    void on_pushButton_281_clicked();
+
+    void on_icon4_343_clicked();
+
+    void on_icon4_344_clicked();
+
+    void on_pushButton_418_clicked();
+
+    void on_icon2_52_clicked();
+
+    void on_icon4_342_clicked();
+
+    void on_icon3_48_clicked();
+
+    void on_pushButton_417_clicked();
+
+    void on_icon3_49_clicked();
+
+    void on_b_afficherv_7_clicked();
+
+    void on_icon3_50_clicked();
+
+    void on_icon2_50_clicked();
+
+    void on_icon4_339_clicked();
+
+    void on_reffmodifier_4_activated(const QString &arg1);
+
+    void on_pushButton_137_clicked();
+
+    void on_pushButton_282_clicked();
+
+    void on_pushButton_284_clicked();
+
+    void on_pushButton_283_clicked();
 
 private:
     Ui::MainWindow *ui;

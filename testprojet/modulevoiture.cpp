@@ -3174,6 +3174,7 @@ void MainWindow::on_pushButton_711_clicked()
  // model->setQuery("SELECT VOITURE.CHAUFFEUR, CHAUFFEURE.MATRICULE_FISCALE from VOITURE INNER JOIN CHAUFFEURE ON VOITURE.CHAUFFEUR = CHAUFFEURE.MATRICULE_FISCALE");
   model->setQuery("SELECT MATRICULE_FISCALE FROM CHAUFFEURE ");
    ui->supprimerref_3->setModel(model);
+   ui->reffmodifier_4->setModel(model);
 
 }
 }
@@ -3792,7 +3793,7 @@ void MainWindow::on_pushButton_277_clicked()
      if(test)
      {//ui->tabchauffeure->setModel(tmpchauffeure.afficher());//refresh
 
-         ui->tabchauffeur->setModel((tmpc.afficher());
+         ui->tabchauffeur->setModel(tmpc.afficher());
 
          QMessageBox::information(nullptr, QObject::tr("Supprimer un chauffeure"),
                      QObject::tr("chauffeure supprimé.\n"
@@ -3800,6 +3801,7 @@ void MainWindow::on_pushButton_277_clicked()
          QSqlQueryModel * model= new QSqlQueryModel;
           model->setQuery("SELECT MATRICULE_FISCALE FROM chauffeure");
           ui->supprimerref_3->setModel(model);
+          ui->reffmodifier_4->setModel(model);
 
      }
      else
@@ -3838,4 +3840,199 @@ void MainWindow::on_icon4_83_clicked()
 void MainWindow::on_pushButton_140_clicked()
 {
     ui->stackedWidget->setCurrentIndex(52); //main chauffeur
+}
+
+void MainWindow::on_b_modifierv_6_clicked()
+{
+     ui->stackedWidget->setCurrentIndex(62);
+}
+
+
+
+
+void MainWindow::on_pushButton_281_clicked()
+{
+    int matricule_fiscale = ui->reffmodifier_4->currentText().toInt();
+    QString nom = ui->lineEdit_matricule_5->text();
+
+    chauffeure *ch = new chauffeure(matricule_fiscale,nom);
+    if(ch->modifier(matricule_fiscale))
+    {
+        ui->tabchauffeur->setModel(tmpc.afficher());
+
+
+        QMessageBox::information(0, qApp->tr("Update"),
+            qApp->tr("Successful"), QMessageBox::Ok);
+    }
+
+    else
+        QMessageBox::critical(0, qApp->tr("Update"),
+
+                              qApp->tr("you got some problems there check out "), QMessageBox::Cancel);
+}
+
+
+void MainWindow::on_icon4_343_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(53); //ajouter
+}
+
+void MainWindow::on_icon4_344_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(54); //afficher
+
+}
+
+void MainWindow::on_pushButton_418_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(52); //main chaufferue
+
+}
+
+void MainWindow::on_icon2_52_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(61); //supprimer
+
+}
+
+void MainWindow::on_icon4_342_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(54); //afficher
+
+}
+
+void MainWindow::on_icon3_48_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(62); //modifier
+
+}
+
+void MainWindow::on_pushButton_417_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(52); //main chaufferue
+
+}
+
+void MainWindow::on_icon3_49_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(62); //modifier
+
+}
+
+void MainWindow::on_b_afficherv_7_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(54); //afficher
+
+}
+
+void MainWindow::on_icon3_50_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(62); //modifier
+
+}
+
+void MainWindow::on_icon2_50_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(61); //supprimer
+
+}
+
+void MainWindow::on_icon4_339_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(53); //ajouter
+
+
+}
+
+void MainWindow::on_reffmodifier_4_activated(const QString &arg1)
+{
+    int matricule_fiscale = ui->reffmodifier_4->currentText().toInt();
+    QSqlQuery query;
+           query.prepare("SELECT * FROM client_fidele WHERE matricule_fiscale = :matricule_fiscale");
+           query.bindValue(":matricule_fiscale",matricule_fiscale);
+           query.exec();
+
+           while(query.next()){
+
+           ui->lineEdit_matricule_5->setText(query.value(1).toString());
+
+}
+}
+
+void MainWindow::on_pushButton_137_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(47);
+}
+
+void MainWindow::on_pushButton_282_clicked() //ouvrir historique
+{
+
+    QFile file ("C:\\Users\\zcart\\Desktop\\Historique.txt");
+       if (!file.open(QIODevice::ReadOnly))
+       {
+           QMessageBox::information(0,"info",file.errorString());
+       }
+       QTextStream in (&file);
+       ui->historique_client->setText(in.readAll());
+}
+
+void MainWindow::on_pushButton_284_clicked()
+{
+    //imprim historique
+    QPrinter printer;
+       printer.setPrinterName("desierd printer name");
+       QPrintDialog dialog(&printer,this);
+       if(dialog.exec()== QDialog::Rejected) return;
+       ui->historique_client->print(&printer);
+}
+
+void MainWindow::on_pushButton_283_clicked()
+{
+    //recherche historique
+    QString searchString = ui->recherche_historique->text();
+        QTextDocument *document = ui->historique_client->document();
+        on_pushButton_282_clicked();
+        bool found = false;
+
+        document->undo();
+
+        if (searchString.isEmpty()) {
+            QMessageBox::information(this, tr("Empty Search Field"),
+                                     tr("The search field is empty. "
+                                        "Please enter a word and click Find."));
+        } else {
+            QTextCursor highlightCursor(document);
+            QTextCursor cursor(document);
+
+            cursor.beginEditBlock();
+
+
+            QTextCharFormat plainFormat(highlightCursor.charFormat());
+            QTextCharFormat colorFormat = plainFormat;
+            colorFormat.setForeground(Qt::red);
+
+            while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
+                highlightCursor = document->find(searchString, highlightCursor,
+                                                 QTextDocument::FindWholeWords);
+
+                if (!highlightCursor.isNull()) {
+                    found = true;
+                    highlightCursor.movePosition(QTextCursor::WordRight,
+                                                 QTextCursor::KeepAnchor);
+                    highlightCursor.mergeCharFormat(colorFormat);
+
+                }
+            }
+
+
+            cursor.endEditBlock();
+
+            if (found == false) {
+                QMessageBox::information(this, tr("Word Not Found"),
+                                         tr("Sorry, the word cannot be found."));
+            }
+        }
+
+    //line edit recherche_historique
+    //tab historique_client
 }
