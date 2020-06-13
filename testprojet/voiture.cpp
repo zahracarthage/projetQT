@@ -73,7 +73,6 @@ bool voiture::ajouter_voiture()
     query.bindValue(":nbr_reparation", nbr_reparation);
     query.bindValue(":disponibilite", disponibilite);
 
-
     return    query.exec();
 }
 
@@ -123,10 +122,10 @@ QSqlQueryModel *voiture::chercher_voiture(QString id_voiture)
 
 QSqlQueryModel * voiture::afficher_voiture()
 
-{QSqlQueryModel * model= new QSqlQueryModel();
+{
+    QSqlQueryModel * model= new QSqlQueryModel();
 
 model->setQuery("select * from voiture");
-model->setHeaderData(0,Qt::Horizontal,QObject::tr("id_voiture"));
 model->setHeaderData(1,Qt::Horizontal,QObject::tr("nom_voiture"));
 model->setHeaderData(2,Qt::Horizontal,QObject::tr("prix"));
 model->setHeaderData(3,Qt::Horizontal,QObject::tr("nbr_location"));
@@ -134,6 +133,16 @@ model->setHeaderData(4,Qt::Horizontal,QObject::tr("nbr_reparation"));
 model->setHeaderData(5,Qt::Horizontal,QObject::tr("disponibilite"));
 
     return model;
+}
+
+QSqlQueryModel * voiture::aff()
+{
+    QSqlQueryModel * model = new QSqlQueryModel();
+    model->setQuery("SELECT voiture.nom_voiture, voiture.chauffeur, chauffeure.nom from VOITURE INNER JOIN CHAUFFEURE ON VOITURE.CHAUFFEUR = CHAUFFEURE.MATRICULE_FISCALE ");
+
+
+    return model;
+
 }
 
 

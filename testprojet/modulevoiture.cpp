@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent)
     notifier = new QSystemTrayIcon(this);
         notifier->setIcon(QIcon(":/notification.jpg"));
         notifier->show();
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -31,6 +34,7 @@ void MainWindow::on_ajouter_clicked()
     QSound::play(":/click.wav");
 
 
+
 bool test;
 
         voiture v(
@@ -40,15 +44,12 @@ bool test;
                     ui->nbrrep->text(),
                     ui->dispo->currentText()
 
+
                     );
 
 
 
           test= v.ajouter_voiture();
-
-
-
-
 
 
         if (ui->nomv->text().isEmpty())
@@ -91,7 +92,9 @@ bool test;
 
         if(test)
       {
-            notifier->showMessage("Ok","vehicule ajoutée",QSystemTrayIcon::Information,10000);
+            ui->affichelv->setModel(tmpv.afficher_voiture());
+
+            notifier->showMessage("Ok"," vehicule ajoutée",QSystemTrayIcon::Information,10000);
 
 
       QMessageBox::information(nullptr, QObject::tr("Ajouter une voiture "),
@@ -103,10 +106,13 @@ bool test;
       ui->nid->setModel(model);
       ui->rid->setModel(model);
       ui->lineEdit_6->setModel(model);
+      ui->cbx3->setModel(model);
+      ui->cbx4->setModel(model);
+      ui->comboBox_9->setModel(model);
+      ui->comboBox_8->setModel(model);
+      ui->cbsupp->setModel(model);
 
-
-
-      }
+}
         else
             QMessageBox::critical(0, qApp->tr("Ajout"),
 
@@ -164,7 +170,7 @@ void MainWindow::on_b_afficherv_clicked()
     player->setMedia(QUrl("qrc:/click2.wav"));
     player->play();
     ui->stackedWidget->setCurrentIndex(4);
-     ui->affichelv->setModel(tmpv.afficher_voiture());
+    ui->affichelv->setModel(tmpv.afficher_voiture());
 
 
 
@@ -204,13 +210,17 @@ void MainWindow::on_supprimerid_clicked()
 
 
 
+
          QString str = "Vous voulez vraiment supprimer \n le vehicule ayant pour reference : "+ ui->rid->currentText();
                        int ret = QMessageBox::question(this, tr("vehicule"),str,QMessageBox::Ok|QMessageBox::Cancel);
 
                        switch (ret) {
                          case QMessageBox::Ok:
                              if (tmpv.supprimer_voiture(reff))
-                               {  notifier->showMessage("Ok","vehicule supprimé",QSystemTrayIcon::Information,10000);
+                               {
+                                 ui->affichelv->setModel(tmpv.afficher_voiture());
+
+                                 notifier->showMessage("Ok","vehicule supprimé",QSystemTrayIcon::Information,10000);
 
 
                                  QMessageBox ::information(0, qApp->tr("Suppression"),
@@ -220,7 +230,10 @@ void MainWindow::on_supprimerid_clicked()
                                  ui->nid->setModel(model);
                                  ui->rid->setModel(model);
                                  ui->lineEdit_6->setModel(model);
-}
+                                 ui->comboBox_8->setModel(model);
+                                 ui->comboBox_9->setModel(model);
+                                ui->cbsupp->setModel(model);
+                             }
                            break;
                          case QMessageBox::Cancel:
 
@@ -238,35 +251,38 @@ void MainWindow::on_supprimerid_clicked()
                                  }
 
 }
+void MainWindow::on_rid_activated(const QString &arg1)
+{
+    QString id_voiture = ui->rid->currentText();
+    QSqlQuery query;
+    query.prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
+    query.bindValue(":id_voiture",id_voiture);
+    query.exec();
+
+    while(query.next()){
+
+    ui->nomv->setText(query.value(1).toString());
+    ui->prix->setText(query.value(2).toString());
+   ui->nbrloca->setText(query.value(3).toString());
+   ui->nbrrep->setText(query.value(4).toString());
+   ui->dispo->setCurrentText(query.value(5).toString());
+}
+}
 
 void MainWindow::on_nid_activated(const QString &arg1)
 {
-    QString id_voiture = ui->nid->currentText();
 
-    QSqlQuery query;
-   query.prepare("SELECT * FROM voiture WHERE id_voiture = :id_voiture");
-   query.bindValue(":id_voiture",id_voiture);
-   query.exec();
-
-   while(query.next()){
-
-   ui->nnom->setText(query.value(1).toString());
-   ui->nprix->setText(query.value(2).toString());
-  ui->nnbrloca->setText(query.value(3).toString());
-  ui->nnbrrepa->setText(query.value(4).toString());
-  ui->ndispo->setCurrentText(query.value(5).toString());
-   }
 }
 
 void MainWindow::on_pushButton_3_clicked() //function modifier
 {
 
-QString id_voiture = ui->nid->currentText();
-QString nom_voiture = ui->nnom->text();
-QString prix = ui->nprix->text();
-QString nbr_location = ui->nnbrloca->text();
-QString nbr_reparation = ui->nnbrrepa->text();
-QString disponibilite = ui->ndispo->currentText();
+QString id_voiture = ui->rid->currentText();
+QString nom_voiture = ui->nomv->text();
+QString prix = ui->prix->text();
+QString nbr_location = ui->nbrloca->text();
+QString nbr_reparation = ui->nbrrep->text();
+QString disponibilite = ui->dispo->currentText();
 
 
 
@@ -275,6 +291,8 @@ voiture *v = new voiture(id_voiture, nom_voiture, prix, nbr_location, nbr_repara
     if (v->modifier_voiture())
 
     {
+        ui->affichelv->setModel(tmpv.afficher_voiture());
+
         notifier->showMessage("Ok","vehicule modifié",QSystemTrayIcon::Information,10000);
 
         QMessageBox::information(0, qApp->tr("Update"),
@@ -436,7 +454,25 @@ void MainWindow::on_b_vehicules_clicked()
     ui->stackedWidget->setCurrentIndex(2);
 }
 
-
+void MainWindow::on_ncin_activated(const QString &arg1)
+{
+    QString cin = ui->ncin->currentText();
+    QSqlQuery query;
+    query.prepare("SELECT* from authentification where cin = :cin");
+   query.bindValue(":cin",cin);
+ ;    query.exec();
+    while (query.next())
+    {
+        ui->nom_a->setText(query.value(0).toString());
+        ui->prenom_a->setText(query.value(1).toString());
+        ui->numero->setText(query.value(2).toString());
+        ui->role->setCurrentText(query.value(3).toString());
+        ui->cin->setText(query.value(4).toString());
+        ui->pwd->setText(query.value(5).toString());
+        ui->qS->setCurrentText(query.value(6).toString());
+        ui->rep_qs->setText(query.value(7).toString());
+    }
+}
 void MainWindow::on_b_ajouter_auth_clicked()
 {
     bool test;
@@ -515,6 +551,8 @@ void MainWindow::on_b_ajouter_auth_clicked()
 
             if(test)
           {
+                ui->table_auth->setModel(tmpa.afficher());
+
                 notifier->showMessage("Ok"," ajouté",QSystemTrayIcon::Information,10000);
 
 
@@ -600,7 +638,10 @@ void MainWindow::on_supprimer_auth_clicked()
                             case QMessageBox::Ok:
                                 if (tmpa.supprimer(cin))
 
-                                {    QMessageBox ::information(0, qApp->tr("Suppression"),
+                                {
+                                    ui->table_auth->setModel(tmpa.afficher());
+
+                                    QMessageBox ::information(0, qApp->tr("Suppression"),
                                                               qApp->tr("cet personne a été supprimé"), QMessageBox::Ok);
 
                                     notifier->showMessage("Ok","Moderateur supprimé",QSystemTrayIcon::Information,10000);
@@ -989,32 +1030,7 @@ void MainWindow::on_a_filtrer_clicked()
 
 void MainWindow::on_pushButton_26_clicked()
 {
-    int reff =ui->rcin->currentText().toInt();
 
-    if (ui->rcin->currentText().isEmpty())
-     {
-
-         QMessageBox::information(this," ERREUR "," VEUILLEZ VERIFIER CHAMP Reference  !!!!") ;
-
-     }
-    else{
-            QSqlQueryModel *model =tmpa.chercher(reff);
-          int IDref = model->data(model->index(0,4)).toInt();
-           qDebug()<<(IDref);
-
-            if(reff == IDref)
-            {
-                QMessageBox::information(this," ok ","  trouvé  !!!!") ;
-                ui->tabrauth->show();
-              ui->tabrauth->setModel(model);
-
-            }
-             else
-            {
-                QMessageBox::critical(0, qApp->tr(""),
-                    qApp->tr("reference non trouvé"), QMessageBox::Ok);
-}
-}
 }
 
 void MainWindow::on_icon4_16_clicked()
@@ -1068,12 +1084,16 @@ void MainWindow::on_pushButton_7_clicked()
 
     QMediaPlayer *player = new QMediaPlayer;
     player->setMedia(QUrl("qrc:/click2.wav"));
-    player->play();ui->stackedWidget->setCurrentIndex(7); //done
+    player->play();ui->stackedWidget->setCurrentIndex(9); //done
 
 }
 
 void MainWindow::on_login_clicked()  //login
 {
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setMedia(QUrl("qrc:/click2.wav"));
+    player->play();
+
     QString name= ui->pseudo->text();
 
     QString mdp=ui->mdp->text();
@@ -1092,6 +1112,8 @@ void MainWindow::on_login_clicked()  //login
         {
             QMessageBox::information(this," ok "," infos are correct  !!!!") ;
             ui->stackedWidget->setCurrentIndex(16);
+            notifier->showMessage("Ok"," vous etes connecté",QSystemTrayIcon::Information,10000);
+
 
         }
         if (count>1)
@@ -1133,10 +1155,6 @@ void MainWindow::on_pushButton_33_clicked()
     ui->affichelv->setModel(tmpv.sortnom());
 }
 
-void MainWindow::on_pushButton_34_clicked()
-{
-    ui->affichelv->setModel(tmpv.sortnbrloca());
-}
 
 void MainWindow::on_pushButton_30_clicked()
 {
@@ -1149,10 +1167,15 @@ void MainWindow::on_pushButton_30_clicked()
 void MainWindow::on_pushButton_36_clicked()
 {
     ui->stackedWidget->setCurrentIndex(15);
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setMedia(QUrl("qrc:/click2.wav"));
+    player->play();
 }
 
 void MainWindow::on_b_ajouter_auth_2_clicked()
 {
+    notifier->showMessage("Ok"," ajoutée",QSystemTrayIcon::Information,10000);
+
     bool test;
 
 
@@ -1286,10 +1309,17 @@ void MainWindow::on_pushButton_39_clicked()
 
 
       QSqlQueryModel * model = new QSqlQueryModel;
+      QSqlQueryModel * model2 = new QSqlQueryModel;
+
       model->setQuery("SELECT id_dep from departement");
       ui->mid_dept->setModel(model);
       ui->siddep->setModel(model);
       ui->riddep->setModel(model);
+
+      model2->setQuery("select nom_dep from DEPARTEMENT");
+       model2->setHeaderData(0, Qt::Horizontal, tr("nom_dep"));
+       ui->cbx->setModel(model2);
+       ui->cbx2->setModel(model2);
 
       }
       else
@@ -1301,16 +1331,18 @@ void MainWindow::on_pushButton_39_clicked()
 
 void MainWindow::on_mid_dept_activated(const QString &arg1)
 {
-    int id_dep =ui->mid_dept->currentText().toInt();
+    QString id_dep = ui->mid_dept->currentText();
     QSqlQuery query;
-    query.prepare("SELECT* from DEPARTEMENT where id_dep = :id_dep");
-   query.bindValue(":id_dep",id_dep);
- ;    query.exec();
-    while (query.next())
-    {
-        ui->lineEdit_20->setText(query.value(1).toString());
-        ui->lineEdit_73->setText(query.value(2).toString());
-    }
+       query.prepare("SELECT * FROM departement WHERE id_dep = :id_dep");
+       query.bindValue(":id_dep",id_dep);
+       query.exec();
+
+       while(query.next()){
+
+       ui->lineEdit_73->setText(query.value(2).toString());
+       ui->lineEdit_20->setText(query.value(1).toString());
+       }
+
 }
 
 void MainWindow::on_pushButton_43_clicked()
@@ -1330,6 +1362,10 @@ void MainWindow::on_pushButton_43_clicked()
 
           QMessageBox::information(nullptr,QObject::tr("modifier Departement"),
             QObject::tr(" Departement modifer") ,QMessageBox::Ok);
+
+        QSqlQueryModel * model = new QSqlQueryModel;
+          model->setHeaderData(0, Qt::Horizontal, tr("nom_dep"));
+          ui->cbx->setModel(model);
 
          }else
 
@@ -1375,7 +1411,12 @@ void MainWindow::on_pushButton_82_clicked()
             model->setQuery("SELECT id_dep from departement");
             ui->mid_dept->setModel(model);
             ui->siddep->setModel(model);
-            ui->riddep->setModel(model);
+
+              model->setHeaderData(0, Qt::Horizontal, tr("nom_dep"));
+              ui->cbx->setModel(model);
+              ui->cbx2->setModel(model);
+              ui->riddep->setModel(model);
+
 
         }
         else
@@ -1455,8 +1496,10 @@ void MainWindow::on_pushButton_118_clicked()
     QString grade= ui->lineEdit_34->text();
     int salaire = ui->lineEdit_27->text().toInt();
     int num = ui->lineEdit_26->text().toInt();
+    QString dep= ui->cbx->currentText();
 
-  personnel p(id_personnel,nom, prenom,adresse,grade, salaire,num);
+  personnel p(id_personnel,nom, prenom,adresse,grade, salaire,num,dep);
+
   bool testt=p.verifierId(id_personnel);
 
   if(testt)
@@ -1476,6 +1519,7 @@ void MainWindow::on_pushButton_118_clicked()
 QMessageBox::information(nullptr, QObject::tr("Ajouter un personnel"),
                   QObject::tr("personnel ajouté.\n"
                               "Click Ok to exit."), QMessageBox::Ok);
+
 
 QSqlQueryModel * model = new QSqlQueryModel;
 model->setQuery("SELECT id_personnel from personnel");
@@ -1513,6 +1557,7 @@ void MainWindow::on_modifiidperso_activated(const QString &arg1)
   ui->lineEdit_93->setText(query.value(4).toString());
   ui->lineEdit_94->setText(query.value(5).toString());
   ui->lineEdit_95->setText(query.value(6).toString());
+  ui->cbx2->setCurrentText(query.value(7).toString());
 
    }
 }
@@ -1526,12 +1571,13 @@ void MainWindow::on_pushButton_119_clicked()
     QString grade= ui->lineEdit_93->text();
     int salaire = ui->lineEdit_94->text().toInt();
     int num = ui->lineEdit_95->text().toInt();
+    QString dep = ui->cbx2->currentText();
 
 
 
      personnel p;
        bool test;
-       test=p.modifier(id_personnel,nom,prenom,adresse,grade,salaire,num);
+       test=p.modifier(id_personnel,nom,prenom,adresse,grade,salaire,num,dep);
        if(test)
        {
           //ui->tableView_3->setModel(tmppersonnel.afficher());
@@ -1657,7 +1703,7 @@ void MainWindow::on_b_vehicules_7_clicked()
 void MainWindow::on_pushButton_53_clicked()
 {
     QString id_dep = ui->riddep->currentText();
-     ui->tabledepartement->setModel(tmpd.chercher_Dep(id_dep));
+     ui->af_dep->setModel(tmpd.chercher_Dep(id_dep));
 }
 
 void MainWindow::on_a_filtrer_2_clicked()
@@ -1820,6 +1866,9 @@ void MainWindow::on_a_filtrer_4_clicked()
 void MainWindow::on_pushButton_35_clicked()
 {
    ui->stackedWidget->setCurrentIndex(29);
+   QMediaPlayer *player = new QMediaPlayer;
+   player->setMedia(QUrl("qrc:/click2.wav"));
+   player->play();
 }
 
 void MainWindow::on_pushButton_56_clicked()
@@ -2416,7 +2465,8 @@ void MainWindow::on_pb_ajouter_2_clicked()
      QString ADRESSE= ui->lineEdit_adresse_3->text();
       QString DATE1= ui->lineEdit_date1_2->text();
        QString NBR_JOURS= ui->lineEdit_nbr_jours_2->text();
-  client c(REF,NOM,PRENOM,CIN,ADRESSE,DATE1,NBR_JOURS);
+       QString IDV = ui->cbx4->currentText();
+  client c(REF,NOM,PRENOM,CIN,ADRESSE,DATE1,NBR_JOURS,IDV);
   bool test=c.ajouter();
   if(test)
 
@@ -2431,6 +2481,7 @@ model->setQuery("SELECT REF FROM client");
 ui->reffmodifier->setModel(model);
 ui->refsup->setModel(model);
 ui->rechercherref->setModel(model);
+ui->id_clientrec->setModel(model);
 
     }
   else
@@ -2465,6 +2516,7 @@ void MainWindow::on_reffmodifier_activated(const QString &arg1)
         ui->lineEdit_adresse_6->setText(query.value(4).toString());
         ui->lineEdit_date1_4->setText(query.value(5).toString());
         ui->lineEdit_nbr_jours_4->setText(query.value(6).toString());
+        ui->cbx3->setCurrentText(query.value(7).toString());
 
 
 }
@@ -2479,8 +2531,9 @@ void MainWindow::on_pushButton_modifierClient_3_clicked()
      QString adresse= ui->lineEdit_adresse_6->text();
       QString date1= ui->lineEdit_date1_4->text();
        QString nbr_jours= ui->lineEdit_nbr_jours_4->text();
+       QString IDV = ui->cbx3->currentText();
 
-  client c(ref,nom,prenom,cin,adresse,date1,nbr_jours);
+  client c(ref,nom,prenom,cin,adresse,date1,nbr_jours,IDV);
   bool test=c.modifier(ref);
   if(test)
 {//ui->tabclient->setModel(tmpclient.afficher());//refresh
@@ -2685,6 +2738,7 @@ void MainWindow::on_pb_ajouter_client_f_clicked()
     ui->supprimerref->setModel(model);
     ui->modifiermatricule->setModel(model);
 
+    ui->cbx7->setModel(model);
     }
 }
 
@@ -3048,6 +3102,11 @@ void MainWindow::on_pushButton_105_clicked()
 void MainWindow::on_pushButton_131_clicked() //save
 {
 
+    QPrinter print;
+    print.setPrinterName("imprimer");
+    QPrintDialog dialog(&print, this);
+    if(dialog.exec()==QDialog::Rejected) return;
+    ui->afficherclient->render(&print);
 }
 
 void MainWindow::on_icon2_41_clicked()
@@ -3077,4 +3136,706 @@ void MainWindow::on_icon3_40_clicked()
 void MainWindow::on_pushButton_108_clicked()
 {
     ui->stackedWidget->setCurrentIndex(41);
+}
+
+
+
+void MainWindow::on_b_ajouterv_6_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(53);
+}
+
+void MainWindow::on_pushButton_711_clicked()
+{
+    QSqlQueryModel * model= new QSqlQueryModel;
+    model->setQuery("SELECT MATRICULE_FISCALE FROM client_fidele");
+
+    int MAT=ui->cbx7->currentText().toInt();
+      QString NOM= ui->lineEdit_matricule_8->text();
+
+
+
+
+
+
+    //ui->tabWidget->setCurrentIndex(14);
+
+    chauffeure ch(MAT,NOM);
+    bool test=ch.ajouter();
+    if(test)
+  {
+  QMessageBox::information(nullptr, QObject::tr("Ajouter un chauffeure"),
+                    QObject::tr("chauffeure disponible.\n"
+                                "Click ok to exit."), QMessageBox::Ok);
+
+  ui->tabchauffeur->setModel(tmpc.afficher());
+
+  QSqlQueryModel * model = new QSqlQueryModel();
+ // model->setQuery("SELECT VOITURE.CHAUFFEUR, CHAUFFEURE.MATRICULE_FISCALE from VOITURE INNER JOIN CHAUFFEURE ON VOITURE.CHAUFFEUR = CHAUFFEURE.MATRICULE_FISCALE");
+  model->setQuery("SELECT MATRICULE_FISCALE FROM CHAUFFEURE ");
+   ui->supprimerref_3->setModel(model);
+
+}
+}
+
+void MainWindow::on_pushButton_723_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(52);
+}
+
+void MainWindow::on_pushButton_139_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(41);
+}
+
+void MainWindow::on_icon4_73_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(54);
+   ui->tabchauffeur->setModel(tmpc.afficher());
+}
+
+void MainWindow::on_b_afficherv_6_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(54);
+    ui->tabchauffeur->setModel(tmpc.afficher());
+}
+
+void MainWindow::on_pushButton_724_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(52);
+}
+
+void MainWindow::on_pushButton_133_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(16);
+}
+
+void MainWindow::on_pushButton_727_clicked()
+{
+    //affichelv
+    ui->affichelv->setModel(tmpv.aff());
+}
+
+void MainWindow::on_new_2_clicked()
+{
+
+        QSqlQueryModel * model= new QSqlQueryModel;
+        model->setQuery("SELECT DISPONIBILITE FROM VOITURE ");
+        ui->cbx8->setModel(model);
+        cout<<"fffffffffffffffffffffffffé"<<endl;
+
+}
+
+
+
+void MainWindow::on_cbx8_activated(const QString &arg1)
+{
+
+    QString id=ui->cbx8->currentText();
+    ui->afficher_emp->setModel(tempemp.metierCommun(id));
+}
+
+void MainWindow::on_pushButton_714_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(52);
+}
+
+void MainWindow::on_pbbb_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::on_b_vehicules_26_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+void MainWindow::on_a_ajouter_4_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(56);
+}
+
+void MainWindow::on_pushButton_141_clicked()
+{
+    int id_voiture = ui->comboBox_9->currentText().toInt();
+    QString nom= ui->lineEdit_32->text();
+    QString prenom= ui->lineEdit_40->text();
+    QString tel= ui->lineEdit_33->text();
+    QDate datee=ui->dateEdit_9->date();
+
+    contrat  d(id_voiture,nom,prenom, tel,datee);
+  bool testt=d.verifierId_voiture(id_voiture);
+
+
+  if(testt)
+  {
+      QMessageBox::critical(nullptr, QObject::tr("Ajouter un Contrat"),
+                  QObject::tr("déjà existant !.\n"
+                              "Click Ok to exit."), QMessageBox::Ok);
+
+    }
+
+  else {
+
+      bool test=d.ajouter();
+      if(test)
+    {
+
+    QMessageBox::information(nullptr, QObject::tr("Ajouter un Contrat"),
+                      QObject::tr("Contrat ajouté.\n"
+                                  "Click Ok to exit."), QMessageBox::Ok);
+
+    }
+      else
+          QMessageBox::critical(nullptr, QObject::tr("Ajouter un Contrat"),
+                      QObject::tr("Erreur !.\n"
+                                  "Click Ok to exit."), QMessageBox::Ok);
+}
+
+  /*QSqlQueryModel *model2 = new QSqlQueryModel;
+  model2->setQuery("select id_voiture from voiture");
+  ui->comboBox_7->setModel(model2);
+  QSqlQueryModel *model = new QSqlQueryModel;*/
+
+}
+
+void MainWindow::on_b_vehicules_21_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+void MainWindow::on_pushButton_143_clicked()
+{
+    int id_voiture = ui->comboBox_8->currentText().toInt();
+    QString nom= ui->lineEdit_39->text();
+    QString prenom= ui->lineEdit_43->text();
+    QString tel= ui->lineEdit_33->text();
+    QDate datee=ui->dateEdit_10->date();
+
+    QSqlQueryModel *model3 = new QSqlQueryModel;
+    model3->setQuery("select id_voiture from voiture");
+    ui->comboBox_8->setModel(model3);
+
+
+
+     contrat c;
+       bool test;
+       test=c.modifier(id_voiture,nom,prenom, tel,datee);
+       if(test)
+       {
+
+          QMessageBox::information(nullptr,QObject::tr("modifier contrat"),
+            QObject::tr(" contrat modifer") ,QMessageBox::Ok);
+
+         }else
+
+             QMessageBox::critical(nullptr,QObject::tr("modifier contrat"),
+               QObject::tr("Erreur !.\n""Click Ok to exit."), QMessageBox::Ok);
+}
+
+
+void MainWindow::on_icon3_44_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(57);
+}
+
+void MainWindow::on_comboBox_8_activated(const QString &arg1)
+{
+    QString id_voiture = ui->comboBox_8->currentText();
+    QSqlQuery query;
+    query.prepare("SELECT * FROM CONTRAT WHERE id_voiture = :id_voiture");
+    query.bindValue(":id_voiture",id_voiture);
+    query.exec();
+    while(query.next()){
+        ui->lineEdit_39->setText(query.value(2).toString());
+        ui->lineEdit_43->setText(query.value(3).toString());
+        ui->lineEdit_41->setText(query.value(4).toString());
+
+    }
+}
+
+void MainWindow::on_icon3_45_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(57);
+}
+
+
+void MainWindow::on_supprimeridc_clicked()
+{
+    int idd = ui->cbsupp->currentText().toInt();
+    bool test=tmpcontrat.supprimer(idd);
+    if(test)
+    {
+        QMessageBox::information(nullptr, QObject::tr("Supprimer un contrat"),
+                    QObject::tr("Contrat supprimé.\n"
+                                "Click Ok to exit."), QMessageBox::Ok);
+
+    }
+    else
+    {QMessageBox::critical(nullptr, QObject::tr("Supprimer un contrat"),
+                    QObject::tr("Erreur !.\n"
+                                "Click Ok to exit."), QMessageBox::Ok);
+    }
+    QSqlQueryModel *model2 = new QSqlQueryModel;
+    model2->setQuery("select id_voiture from contrat");
+    ui->comboBox_8->setModel(model2);
+    ui->comboBox_9->setModel(model2);
+}
+
+void MainWindow::on_icon2_45_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(58);
+
+}
+
+void MainWindow::on_icon4_80_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(59);
+    ui->affichercontrat->setModel(tmpcontrat.afficher());
+
+
+}
+
+void MainWindow::on_icon4_75_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(59);
+    ui->affichercontrat->setModel(tmpcontrat.afficher());
+
+}
+
+void MainWindow::on_icon4_78_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(59);
+    ui->affichercontrat->setModel(tmpcontrat.afficher());
+
+}
+
+void MainWindow::on_print_clicked()
+{
+    QPrinter print;
+    print.setPrinterName("imprimer");
+    QPrintDialog dialog(&print, this);
+    if(dialog.exec()==QDialog::Rejected) return;
+    ui->affichercontrat->render(&print);
+}
+
+
+void MainWindow::on_trierdept_clicked()
+{
+    ui->af_dep->setModel(tmpd.afficher_tri_ID());
+
+}
+
+void MainWindow::on_b_vehicules_20_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+void MainWindow::on_a_modifier_4_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(57);
+}
+
+void MainWindow::on_a_supprimer_4_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(58);
+}
+
+void MainWindow::on_a_afficher_4_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(59);
+}
+
+void MainWindow::on_icon2_46_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(58);
+}
+
+void MainWindow::on_b_vehicules_30_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+void MainWindow::on_b_vehicules_31_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+void MainWindow::on_icon4_76_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(56);
+}
+
+void MainWindow::on_icon4_82_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(56);
+}
+
+void MainWindow::on_icon3_47_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(57);
+}
+
+void MainWindow::on_icon2_48_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(58);
+}
+
+void MainWindow::on_b_vehicules_35_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+void MainWindow::on_icon3_46_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(57);
+}
+
+void MainWindow::on_b_vehicules_34_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(55);
+}
+
+
+void MainWindow::on_pushButton_147_clicked()
+{
+    reclamation a (
+                ui->id_clientrec->currentText(),
+                ui->id_voitrec->text(),
+                ui->desc->text(),
+                ui->etat->currentText()
+
+                );
+
+
+bool test = a.ajouter_reclamation();
+
+if(test)
+{
+    ui->afficherreclamation->setModel(tmprec.afficher_reclamation());
+
+    notifier->showMessage("Ok"," ajouté",QSystemTrayIcon::Information,10000);
+
+    QMessageBox::information(nullptr, QObject::tr("Ajouter une reclamation "),
+                      QObject::tr("reclamation ajoutée.\n"
+                                  "Click ok pour quitter."), QMessageBox::Ok);
+
+}
+else
+{
+    QMessageBox::critical(0, qApp->tr("Ajout"),
+
+                    qApp->tr("Probleme d'ajout"), QMessageBox::Cancel);
+}
+ui->id_clientrec->setCurrentText("");
+ui->id_voitrec->setText("");
+ui->desc->setText("");
+ui->etat->setCurrentText("");
+
+QSqlQueryModel * model= new QSqlQueryModel;
+model->setQuery("SELECT id_reclamation FROM reclamation");
+ui->cbxidrec->setModel(model);
+}
+
+void MainWindow::on_id_clientrec_activated(const QString &arg1)
+{
+    //id_voitrec
+    QString ref= ui->id_clientrec->currentText();
+    QSqlQuery query;
+    query.prepare("SELECT * FROM client where ref = :ref");
+    query.bindValue(":ref",ref);
+    query.exec();
+    while(query.next())
+    {
+        ui->id_voitrec->setText(query.value(7).toString());
+    }
+
+}
+
+void MainWindow::on_pushButton_148_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(60);
+}
+
+void MainWindow::on_pushButton_152_clicked()
+{
+    QSqlQuery query;
+
+    QString id_reclamation = ui->cbxidrec->currentText();
+
+    bool test = tmprec.supprimer_reclamation(id_reclamation);
+
+    if (test)
+    {
+
+        QString str = "Vous voulez vraiment supprimer \n la reclamation ayant pour reference : "+ ui->cbxidrec->currentText();
+                      int ret = QMessageBox::question(this, tr("reclamation"),str,QMessageBox::Ok|QMessageBox::Cancel);
+
+                      switch (ret) {
+                        case QMessageBox::Ok:
+                            if (test)
+                              {
+                                ui->afficherreclamation->setModel(tmprec.afficher_reclamation());
+
+                                notifier->showMessage("Ok","reclamation supprimée",QSystemTrayIcon::Information,10000);
+
+                            }
+                            else
+
+                                QMessageBox ::information(0, qApp->tr("Suppression"),
+                                                          qApp->tr("la reclamation a été supprimée"), QMessageBox::Ok);
+                            QSqlQueryModel * model= new QSqlQueryModel;
+                            model->setQuery("SELECT id_reclamation FROM reclamation");
+                            ui->cbxidrec->setModel(model);
+
+    }
+                      }
+    }
+
+
+void MainWindow::on_cbxidrec_activated(const QString &arg1)
+{
+    QString id_reclamation = ui->cbxidrec->currentText();
+
+    QSqlQuery query;
+   query.prepare("SELECT * FROM reclamation WHERE id_reclamation = :id_reclamation");
+   query.bindValue(":id_reclamation",id_reclamation);
+   query.exec();
+
+   while(query.next()){
+
+   ui->id_clientrec->setCurrentText(query.value(1).toString());
+   ui->id_voitrec->setText(query.value(2).toString());
+  ui->desc->setText(query.value(3).toString());
+  ui->etat->setCurrentText(query.value(4).toString());
+   }
+}
+
+
+void MainWindow::on_pushButton_153_clicked()
+{
+    QString id_reclamation = ui->cbxidrec->currentText();
+    QString idc = ui->id_clientrec->currentText();
+    QString idv = ui->id_voitrec->text();
+    QString description = ui->desc->text();
+    QString etat = ui->etat->currentText();
+
+
+    reclamation *r = new reclamation(id_reclamation,idc,idv,description,etat);
+
+    if (r->modifier_reclamation())
+    {
+        ui->afficherreclamation->setModel(tmprec.afficher_reclamation());
+
+        notifier->showMessage("Ok","reclamation modifiée",QSystemTrayIcon::Information,10000);
+
+        QMessageBox::information(0, qApp->tr("Update"),
+            qApp->tr("Successful"), QMessageBox::Ok);
+    }
+    else
+        QMessageBox::critical(0, qApp->tr("Update"),
+            qApp->tr("check again"), QMessageBox::Cancel);
+}
+
+void MainWindow::on_pushButton_154_clicked()
+{
+    ui->afficherreclamation->setModel(tmprec.sort());
+
+}
+
+void MainWindow::on_pushButton_155_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(60);
+}
+
+void MainWindow::on_pushButton_156_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(60);
+
+}
+
+
+void MainWindow::on_pushButton_157_clicked()
+{
+    QString id_voiture = ui->rid->currentText();
+    ui->affichelv->setModel(tmpv.chercher_voiture(id_voiture));
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+}
+
+
+
+void MainWindow::on_modifierauth_clicked()
+{
+    QString cin = ui->ncin->currentText();
+
+    QString nom = ui->nom_a->text();
+    QString prenom = ui->prenom_a->text();
+    int numero = ui->numero->text().toInt();
+    QString role = ui->role->currentText();
+    QString pwd = ui->pwd->text();
+    QString question_secrete = ui->qS->currentText();
+    QString rep_qs = ui->rep_qs->text();
+
+
+    auth *a = new auth(nom, prenom, numero, role, cin ,pwd, question_secrete, rep_qs);
+
+
+
+        if (a->modifier() )
+
+        {
+            ui->table_auth->setModel(tmpa.afficher());
+
+
+            QMessageBox::information(0, qApp->tr("Update"),
+                qApp->tr("Successful"), QMessageBox::Ok);
+            notifier->showMessage("Ok","moderateur modifié",QSystemTrayIcon::Information,10000);
+
+
+
+
+        }
+
+        else
+            QMessageBox::critical(0, qApp->tr("Update"),
+
+                                  qApp->tr("you got some problems there check out "), QMessageBox::Cancel);
+}
+
+void MainWindow::on_rechercherauth_clicked()
+{
+    QString cin = ui->ncin->currentText();
+    ui->table_auth->setModel(tmpa.chercher(cin));
+
+}
+
+void MainWindow::on_tricin_clicked()
+{
+    ui->table_auth->setModel(tmpa.sortcin());
+}
+
+void MainWindow::on_pushButton_159_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(60);
+}
+
+void MainWindow::on_pushButton_16_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+void MainWindow::on_pushButton_34_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+}
+
+void MainWindow::on_pushButton_146_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+}
+
+void MainWindow::on_pushButton_163_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(16);
+
+}
+
+void MainWindow::on_pushButton_164_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(16);
+
+}
+
+void MainWindow::on_pushButton_165_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(16);
+
+}
+
+void MainWindow::on_b_vehicules_28_clicked() //dept
+{
+    ui->stackedWidget->setCurrentIndex(17);
+
+}
+
+void MainWindow::on_pushButton_132_clicked() //personnel
+{
+      ui->stackedWidget->setCurrentIndex(22);
+
+}
+
+void MainWindow::on_pushButton_166_clicked() //mp
+{
+    ui->stackedWidget->setCurrentIndex(16);
+
+}
+
+void MainWindow::on_pushButton_712_clicked()
+{
+    QPrinter print;
+    print.setPrinterName("imprimer");
+    QPrintDialog dialog(&print, this);
+    if(dialog.exec()==QDialog::Rejected) return;
+    ui->tabchauffeur->render(&print);
+}
+
+void MainWindow::on_pushButton_277_clicked()
+{
+
+    int MAT = ui->supprimerref_3->currentText().toInt();
+     bool test=tmpc.supprimer(MAT);
+     if(test)
+     {//ui->tabchauffeure->setModel(tmpchauffeure.afficher());//refresh
+
+         ui->tabchauffeur->setModel((tmpc.afficher());
+
+         QMessageBox::information(nullptr, QObject::tr("Supprimer un chauffeure"),
+                     QObject::tr("chauffeure supprimé.\n"
+                                 "Click Cancel to exit."), QMessageBox::Cancel);
+         QSqlQueryModel * model= new QSqlQueryModel;
+          model->setQuery("SELECT MATRICULE_FISCALE FROM chauffeure");
+          ui->supprimerref_3->setModel(model);
+
+     }
+     else
+         QMessageBox::critical(nullptr, QObject::tr("Supprimer un chauffeure"),
+                     QObject::tr("Erreur !.\n"
+                                 "Click Cancel to exit."), QMessageBox::Cancel);
+}
+
+void MainWindow::on_icon4_341_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(53);
+
+}
+
+void MainWindow::on_b_supprimerv_6_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(61);
+}
+
+void MainWindow::on_icon2_49_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(61);
+}
+
+void MainWindow::on_cbx7_activated(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_icon4_83_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(54);
+
+}
+
+void MainWindow::on_pushButton_140_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(52); //main chauffeur
 }

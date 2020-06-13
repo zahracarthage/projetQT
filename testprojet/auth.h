@@ -32,8 +32,7 @@ public:
     bool ajouter();
     QSqlQueryModel * afficher();
     bool supprimer(int cin);
-    QSqlQueryModel *chercher(int cin);
-    QSqlQueryModel *recherche(QString n);
+    QSqlQueryModel *chercher(QString cin);
     bool modifier();
     bool verifierexcin(QString cin);
     QSqlQueryModel *sortcin();

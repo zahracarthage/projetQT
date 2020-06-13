@@ -9,8 +9,9 @@ CIN=0;
 ADRESSE="";
 DATE1="";
 NBR_JOURS="";
+IDV="";
 }
-client::client(int REF,QString NOM,QString PRENOM,int CIN,QString ADRESSE,QString DATE1,QString NBR_JOURS)
+client::client(int REF,QString NOM,QString PRENOM,int CIN,QString ADRESSE,QString DATE1,QString NBR_JOURS,QString IDV)
 {
   this->REF=REF;
   this->NOM=NOM;
@@ -19,6 +20,7 @@ client::client(int REF,QString NOM,QString PRENOM,int CIN,QString ADRESSE,QStrin
     this->ADRESSE=ADRESSE;
     this->DATE1=DATE1;
     this->NBR_JOURS=NBR_JOURS;
+    this->IDV=IDV;
 }
 QString client::get_NOM(){return  NOM;}
 QString client::get_PRENOM(){return PRENOM;}
@@ -36,8 +38,8 @@ bool client::ajouter()
 {
 QSqlQuery query;
 QString res= QString::number(REF);
-query.prepare("INSERT INTO client (REF, NOM, PRENOM,CIN,ADRESSE,DATE1,NBR_JOURS) "
-                    "VALUES (:REF, :NOM, :PRENOM,:CIN,:ADRESSE,:DATE1,:NBR_JOURS)");
+query.prepare("INSERT INTO client (REF, NOM, PRENOM,CIN,ADRESSE,DATE1,NBR_JOURS,IDV) "
+                    "VALUES (:REF, :NOM, :PRENOM,:CIN,:ADRESSE,:DATE1,:NBR_JOURS,:IDV)");
 query.bindValue(":REF", REF);
 query.bindValue(":NOM", NOM);
 query.bindValue(":PRENOM", PRENOM);
@@ -45,6 +47,7 @@ query.bindValue(":CIN", CIN );
 query.bindValue(":ADRESSE", ADRESSE);
 query.bindValue(":DATE1", DATE1);
 query.bindValue(":NBR_JOURS", NBR_JOURS);
+query.bindValue(":IDV",IDV);
 
 
 return    query.exec();
@@ -61,6 +64,7 @@ model->setHeaderData(3, Qt::Horizontal, QObject::tr("CIN"));
 model->setHeaderData(4, Qt::Horizontal, QObject::tr("ADRESSE"));
 model->setHeaderData(5, Qt::Horizontal, QObject::tr("DATE1"));
 model->setHeaderData(6, Qt::Horizontal, QObject::tr("NBR_JOURS"));
+model->setHeaderData(8,Qt::Horizontal, QObject::tr("IDV"));
     return model;
 }
 
@@ -106,6 +110,7 @@ QSqlQueryModel * client::rechercher(int ref)
     model->setHeaderData(4,Qt::Horizontal,QObject::tr("adresse"));
     model->setHeaderData(5,Qt::Horizontal,QObject::tr("date1"));
     model->setHeaderData(6,Qt::Horizontal,QObject::tr("nbr_jours"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("IDV"));
 
 return model;
 }

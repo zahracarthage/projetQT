@@ -85,3 +85,10 @@ QSqlQueryModel * emplacement::tri2()
         model->setQuery("SELECT * FROM EMPLACEMENT ORDER BY REF_EMPLACEMENT DESC");
         return model;
 }
+
+QSqlQueryModel * emplacement::metierCommun(QString id)
+{
+    QSqlQueryModel *mqy=new::QSqlQueryModel;
+               mqy->setQuery("select * from  VOITURE where DISPONIBILITE like '"+id+"'");
+               return mqy;
+}

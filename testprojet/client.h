@@ -7,7 +7,7 @@ class client
 {
 public:
     client();
-    client(int,QString,QString,int,QString,QString,QString);
+    client(int,QString,QString,int,QString,QString,QString,QString);
     int get_REF();
     QString get_NOM();
     QString get_PRENOM();
@@ -24,7 +24,7 @@ public:
     QSqlQueryModel * tri();
 
 private:
-    QString NOM,PRENOM,ADRESSE,DATE1,NBR_JOURS;
+    QString NOM,PRENOM,ADRESSE,DATE1,NBR_JOURS,IDV;
     int REF,CIN;
 };
 

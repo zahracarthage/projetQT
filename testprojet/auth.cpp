@@ -87,7 +87,7 @@ bool auth::ajouter()
     return query.exec();
 }
 
-QSqlQueryModel *auth::chercher(int cin)
+QSqlQueryModel *auth::chercher(QString cin)
 {
     QSqlQueryModel * model = new QSqlQueryModel();
     QSqlQuery query;

@@ -10,12 +10,15 @@
 #include "client.h"
 #include "client_fidele.h"
 #include "emplacement.h"
+#include "chauffeur.h"
 #include <qsystemtrayicon.h>
 #include "connexion.h"
 #include <QStandardItemModel>
 #include "qcustomplot.h"
 #include <QSqlTableModel>
 #include <QSoundEffect>
+#include "contrat.h"
+#include "reclamation.h"
 #include <QSound>
 #include <QMediaPlayer>
 #include<QtPrintSupport/QPrinter>
@@ -46,6 +49,9 @@ public:
         emplacement tempemp;
         client tmpclient;
         client_fidele tmpclientf;
+        chauffeure tmpc;
+        contrat tmpcontrat;
+        reclamation tmprec;
 
         void make_plot();
 
@@ -187,7 +193,6 @@ private slots:
 
     void on_pushButton_33_clicked();
 
-    void on_pushButton_34_clicked();
 
     void on_pushButton_30_clicked();
 
@@ -239,11 +244,11 @@ private slots:
     
     
     
-   void on_pushButton_118_clicked();
+    void on_pushButton_118_clicked();
 
     void on_a_modifier_3_clicked();
 
-   void on_pushButton_119_clicked();
+    void on_pushButton_119_clicked();
 
     void on_a_supprimer_3_clicked();
 
@@ -589,6 +594,162 @@ private slots:
 
 
     void on_pushButton_108_clicked();
+
+    void on_b_ajouterv_6_clicked();
+
+    void on_pushButton_711_clicked();
+
+    void on_pushButton_723_clicked();
+
+    void on_pushButton_139_clicked();
+
+    void on_icon4_73_clicked();
+
+    void on_b_afficherv_6_clicked();
+
+    void on_pushButton_724_clicked();
+
+    void on_pushButton_133_clicked();
+
+    void on_pushButton_727_clicked();
+
+    void on_new_2_clicked();
+
+    void on_cbx8_activated(const QString &arg1);
+
+    void on_pushButton_714_clicked();
+
+    void on_pbbb_clicked();
+
+
+    void on_b_vehicules_26_clicked();
+
+    void on_a_ajouter_4_clicked();
+
+    void on_pushButton_141_clicked();
+
+    void on_b_vehicules_21_clicked();
+
+    void on_pushButton_143_clicked();
+
+
+    void on_icon3_44_clicked();
+
+    void on_comboBox_8_activated(const QString &arg1);
+
+    void on_icon3_45_clicked();
+
+
+    void on_supprimeridc_clicked();
+
+    void on_icon2_45_clicked();
+
+    void on_icon4_80_clicked();
+
+    void on_icon4_75_clicked();
+
+    void on_icon4_78_clicked();
+
+    void on_print_clicked();
+
+    void on_trierdept_clicked();
+
+
+    void on_b_vehicules_20_clicked();
+
+    void on_a_modifier_4_clicked();
+
+    void on_a_supprimer_4_clicked();
+
+    void on_a_afficher_4_clicked();
+
+    void on_icon2_46_clicked();
+
+    void on_b_vehicules_30_clicked();
+
+    void on_b_vehicules_31_clicked();
+
+    void on_icon4_76_clicked();
+
+    void on_icon4_82_clicked();
+
+    void on_icon3_47_clicked();
+
+    void on_icon2_48_clicked();
+
+    void on_b_vehicules_35_clicked();
+
+    void on_icon3_46_clicked();
+
+    void on_b_vehicules_34_clicked();
+
+    void on_pushButton_147_clicked();
+
+    void on_id_clientrec_activated(const QString &arg1);
+
+    void on_pushButton_148_clicked();
+
+    void on_pushButton_152_clicked();
+
+    void on_cbxidrec_activated(const QString &arg1);
+
+    void on_pushButton_153_clicked();
+
+    void on_pushButton_154_clicked();
+
+    void on_pushButton_155_clicked();
+
+    void on_pushButton_156_clicked();
+
+    void on_rid_activated(const QString &arg1);
+
+    void on_pushButton_157_clicked();
+
+    void on_pushButton_9_clicked();
+
+    void on_ncin_activated(const QString &arg1);
+
+    void on_modifierauth_clicked();
+
+    void on_rechercherauth_clicked();
+
+    void on_tricin_clicked();
+
+    void on_pushButton_159_clicked();
+
+    void on_pushButton_16_clicked();
+
+    void on_pushButton_34_clicked();
+
+    void on_pushButton_146_clicked();
+
+    void on_pushButton_163_clicked();
+
+    void on_pushButton_164_clicked();
+
+    void on_pushButton_165_clicked();
+
+    void on_b_vehicules_28_clicked();
+
+    void on_pushButton_132_clicked();
+
+    void on_pushButton_166_clicked();
+
+    void on_pushButton_712_clicked();
+
+    void on_pushButton_277_clicked();
+
+    void on_icon4_341_clicked();
+
+    void on_b_supprimerv_6_clicked();
+
+    void on_icon2_49_clicked();
+
+    void on_cbx7_activated(const QString &arg1);
+
+    void on_icon4_83_clicked();
+
+    void on_pushButton_140_clicked();
 
 private:
     Ui::MainWindow *ui;

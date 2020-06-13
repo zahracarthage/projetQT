@@ -5,7 +5,7 @@
 
 class voiture
 {
-    QString   id_voiture ;
+    QString id_voiture ;
     QString nom_voiture;
     QString prix;
     QString nbr_location;
@@ -13,9 +13,9 @@ class voiture
     QString disponibilite;
 public:
     voiture();
-    voiture(QString ,QString, QString, QString, QString );
+    voiture(QString ,QString, QString, QString, QString);
 
-    voiture(QString, QString ,QString, QString, QString, QString );
+    voiture(QString, QString ,QString, QString, QString, QString);
     QString getid();
     QString getnom();
     QString getprix();
@@ -33,6 +33,7 @@ public:
     QSqlQueryModel *sortnom();
     QSqlQueryModel *sortnbrloca();
     QSqlQueryModel *sortprix();
+   QSqlQueryModel * aff();
 
 
 

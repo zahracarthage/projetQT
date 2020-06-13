@@ -22,9 +22,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     auth.cpp \
+    chauffeur.cpp \
     client.cpp \
     client_fidele.cpp \
     connexion.cpp \
+    contrat.cpp \
     departement.cpp \
     depenses.cpp \
     emplacement.cpp \
@@ -32,20 +34,24 @@ SOURCES += \
     modulevoiture.cpp \
     personnel.cpp \
     qcustomplot.cpp \
+    reclamation.cpp \
     smtp.cpp \
     voiture.cpp
 
 HEADERS += \
     auth.h \
+    chauffeur.h \
     client.h \
     client_fidele.h \
     connexion.h \
+    contrat.h \
     departement.h \
     depenses.h \
     emplacement.h \
     modulevoiture.h \
     personnel.h \
     qcustomplot.h \
+    reclamation.h \
     smtp.h \
     voiture.h
 

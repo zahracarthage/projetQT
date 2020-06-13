@@ -9,9 +9,10 @@ personnel::personnel()
     grade="";
     salaire=0;
     num=0;
+    dep="";
 }
 
-personnel::personnel(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num)
+personnel::personnel(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num, QString dep)
 {
     this->id_personnel=id_personnel;
     this->nom=nom;
@@ -20,6 +21,7 @@ personnel::personnel(int id_personnel, QString nom,QString prenom,QString adress
     this->grade=grade;
     this->salaire=salaire;
     this->num=num;
+    this->dep=dep;
 }
 
 
@@ -28,8 +30,8 @@ bool personnel::ajouter()
 {
 QSqlQuery query;
 
-query.prepare("INSERT INTO personnel (id_personnel,nom, prenom,adresse,grade, salaire,num) "
-                    "VALUES (:id_personnel, :nom, :prenom,:adresse, :grade, :salaire,:num)");
+query.prepare("INSERT INTO personnel (id_personnel,nom, prenom,adresse,grade, salaire,num, dep) "
+                    "VALUES (:id_personnel, :nom, :prenom,:adresse, :grade, :salaire,:num, :dep)");
 query.bindValue(":id_personnel",id_personnel);
 query.bindValue(":nom", nom);
 query.bindValue(":prenom",prenom);
@@ -37,6 +39,7 @@ query.bindValue(":adresse",adresse);
 query.bindValue(":grade", grade);
 query.bindValue(":salaire",salaire);
 query.bindValue(":num",num);
+query.bindValue(":dep",dep);
 
 return    query.exec();
 }
@@ -63,7 +66,7 @@ query.prepare("Delete from personnel where id_personnel= :id_personnel ");
 query.bindValue(":id_personnel", res);
 return    query.exec();
 }
-bool personnel::modifier(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num)
+bool personnel::modifier(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num,QString dep)
 {
     QSqlQuery query;
     query.prepare("update personnel set  nom=:nom,prenom=:prenom,adresse=:adresse,grade=:grade,salaire=:salaire,num=:num where id_personnel=:id_personnel");

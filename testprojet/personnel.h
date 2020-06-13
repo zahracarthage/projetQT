@@ -8,7 +8,7 @@ class personnel
 {
 public:
     personnel();
-    personnel(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num);
+    personnel(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num, QString dep);
 
   /* void setid(int id);
    int getid();
@@ -22,7 +22,7 @@ public:
    bool ajouter();
    QSqlQueryModel * afficher();
    bool supprimer(int id_personnell);
-   bool modifier(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num);
+   bool modifier(int id_personnel, QString nom,QString prenom,QString adresse,QString grade,int salaire,int num, QString dep);
    bool verifierId(int  id_personnel);
    QSqlQueryModel * chercher_pers(int id_personnel);
 
@@ -36,6 +36,7 @@ private:
     QString grade;
     int salaire;
     int num;
+    QString dep;
 
 
 };

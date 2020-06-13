@@ -17,6 +17,8 @@ public:
     QSqlQueryModel *rechercher(QString);
     QSqlQueryModel * tri1();
     QSqlQueryModel * tri2();
+    QSqlQueryModel *metierCommun(QString);
+
 };
 
 #endif // EMPLACEMENT_H
